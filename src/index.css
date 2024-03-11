@@ -11,3 +11,18 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+
+.main{
+  width: 100%;
+  height: 100vh;
+  background-color: black;
+  background-color: #151f32;
+  background-image: url(../public/tablero/upper-gradient.svg);
+  background-repeat: no-repeat;
+  background-size: 55%;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

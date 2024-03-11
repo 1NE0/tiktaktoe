@@ -1,0 +1,62 @@
+
+
+
+.tablero_main{
+     width: 500px;
+     height: 500px;
+     display: grid;
+     grid-template-columns: repeat(3, 1fr);
+     grid-template-rows: repeat(3, 1fr);
+     grid-column-gap: 20px;
+     grid-row-gap: 20px;
+}
+
+.container-middle{
+     display: flex;
+     flex-direction: column;
+     align-items: center;
+     justify-content: center;
+     gap: 20px;
+}
+
+.item{
+     background-color: #19253c;
+     border-radius: 10px;
+     transform-style: preserve-3d;
+     display: flex;
+     align-items: center;
+     justify-content: center;
+}
+
+
+.user{
+
+}
+
+.cpu{
+
+}
+
+.back-face {
+     position: absolute;
+     width: 100%;
+     height: 100%;
+     background-color: red; /* Color de fondo de la capa de atrás */
+     backface-visibility: hidden;
+     border-radius: 8px;
+     display: flex;
+     align-items: center;
+     justify-content: center;
+   }
+
+   .back-face span{
+     font-size: 80px;
+    font-weight: bold;
+    font-family: revert;
+   }
+
+.item:hover{
+     /* transform: scale(1.05); */
+     transition: 0.5s;
+     border: 1px solid white;
+}
