@@ -2,6 +2,8 @@ import { AOS } from 'aos';
 import './tablero.css';
 import React, { useEffect, useState } from 'react';
 import Item from '../items/item';
+import CPU from '../cpu/cpu';
+import Swal from 'sweetalert2'
 
 
 export default function Tablero() {
@@ -22,7 +24,7 @@ export default function Tablero() {
     const [generalGame, setGeneralGame] = useState([]);
     const [userSelections, setuserSelections] = useState([]);
     const [cpuSelections, setCpuSelection] = useState([]);
-
+    const cpu = new CPU();
 
     function handleClick(e) {
         const id = e.target.id;
@@ -37,60 +39,54 @@ export default function Tablero() {
             // agregar al arreglo del usuario
             setuserSelections([...userSelections, id]);
             setGeneralGame(prevGeneralGame => [...prevGeneralGame, id]);
-            // cambiar turno
-            setTurno("cpu");
-            //cpuIAnivel1();
+            
+            let terminado = verifyWinner();
+
+            if(!terminado){
+                setTurno("cpu");
+            }
+            
         }
     }
 
 
     function cpuIAnivel1(){
         // le toca a la IA
-        let arrayLibres = [];
-        for (let index = 0; index < 9; index++) {
-            if(!generalGame.includes(index.toString())){
-                arrayLibres.push(index.toString());
-            }
-        }
-
-        let casillaEscoger = arrayLibres[getRandomNumber(0 , arrayLibres.length - 1)];
+        let casillaEscoger = cpu.getCasillasDisponibles(generalGame);
         console.log("la cpu escogió : " + casillaEscoger);
-        console.log("mejor posibilidad arrojada : " + arrayLibres);
-
 
         if(casillaEscoger != null){
             setGeneralGame(prevGeneralGame => [...prevGeneralGame, casillaEscoger.toString()]);
             setCpuSelection([...cpuSelections, casillaEscoger.toString()]);
         }
+
+        let terminado = verifyWinner();
+        if(!terminado){
+            setTurno("usuario");
+        }
         
-        setTurno("usuario");
     }
 
     useEffect(() => {
-        verifyWinner();
-
-        if (turno === "cpu") {
+        let terminado = verifyWinner();
+    
+        if (terminado) {
+            resetGame();
+        } else if (turno === "cpu") {
             setTimeout(() => {
                 cpuIAnivel1();
             }, 2000);
         }
-
-    }, [userSelections, cpuSelections, turno]);
-
+    }, [userSelections, cpuSelections]);
     
-    function getRandomNumber(min, max) {
-        // Genera un número aleatorio entre 0 (inclusive) y 1 (exclusivo)
-        const randomNumber = Math.random();
-      
-        // Escala el número al rango deseado
-        const scaledNumber = randomNumber * (max - min + 1);
-      
-        // Redondea hacia abajo para obtener un número entero dentro del rango
-        const result = Math.floor(scaledNumber) + min;
-      
-        return result;
+    function resetGame() {
+        setTurno("usuario");
+        setGeneralGame([]);
+        setuserSelections([]);
+        setCpuSelection([]);
     }
 
+    
 
     function Initialize() {
         return (
@@ -112,11 +108,41 @@ export default function Tablero() {
     }
     
     function verifyWinner() {
-        posibilidades.forEach((posibilidad) => {
+        for (let posibilidad of posibilidades) {
             if (userSelections.includes(posibilidad[0].toString()) && userSelections.includes(posibilidad[1].toString()) && userSelections.includes(posibilidad[2].toString())) {
                 console.log("GANADOR");
+                Swal.fire({
+                    title: "Ganaste",
+                    text: "Usuario ganó",
+                    imageUrl: "https://i.gifer.com/origin/bc/bc3224bc22ba8fb450c637acbaa82c6e.gif",
+                    imageWidth: 500,
+                    imageHeight: 500,
+                    imageAlt: "Custom image"
+                  });
+
+                
+                return true;
             }
-        })
+
+            if (cpuSelections.includes(posibilidad[0].toString()) && cpuSelections.includes(posibilidad[1].toString()) && cpuSelections.includes(posibilidad[2].toString())) {
+                console.log("GANADOR");
+                Swal.fire({
+                    title: "La cpu ganó",
+                    text: "Suerte a la próxima, idiota",
+                    imageUrl: "https://media1.tenor.com/m/XnpSGG328o8AAAAC/spongebob.gif",
+                    imageWidth: 500,
+                    imageHeight: 500,
+                    imageAlt: "Custom image"
+                  });
+
+                return true;
+            }
+
+
+
+        }
+
+        return false;
     }
 
 
